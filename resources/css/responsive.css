@@ -1,0 +1,98 @@
+/* Responsive Styles - Media Queries */
+
+/* Tablet Styles (768px - 1024px) */
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.35rem;
+    }
+}
+
+/* Mobile Styles (< 768px) */
+@media (max-width: 768px) {
+    /* Typography */
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
+    h4 {
+        font-size: 1.1rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    /* Cards */
+    .package-card-content {
+        padding: 16px;
+    }
+    
+    /* Forms */
+    .form-input,
+    .form-textarea,
+    .form-select {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    
+    /* Sections */
+    .section {
+        padding: 40px 0;
+    }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 12px;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+    
+    .package-card-image {
+        height: 180px;
+    }
+    
+    .contact-form {
+        padding: 20px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .header,
+    .footer,
+    .btn,
+    .search-bar {
+        display: none;
+    }
+    
+    .main-content {
+        padding-top: 0;
+    }
+}
+
