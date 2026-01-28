@@ -53,5 +53,27 @@ class HomeController extends Controller
     {
         return Inertia::render('Contact');
     }
+
+    /**
+     * Display package detail page
+     */
+    public function packageDetail(string $type, int $id)
+    {
+        $package = null;
+        
+        if ($type === 'international') {
+            $package = Packages::getInternationalPackageById($id);
+        } elseif ($type === 'domestic') {
+            $package = Packages::getDomesticPackageById($id);
+        }
+
+        if (!$package) {
+            abort(404, 'Package not found');
+        }
+
+        return Inertia::render('PackageDetail', [
+            'package' => $package,
+        ]);
+    }
 }
 

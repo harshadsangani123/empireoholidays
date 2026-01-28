@@ -14,5 +14,8 @@
 /* Pages */
 @import './pages.css';
 
+/* Package Detail */
+@import './package-detail.css';
+
 /* Responsive */
 @import './responsive.css';

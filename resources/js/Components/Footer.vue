@@ -69,14 +69,20 @@
     </footer>
 </template>
 
-<script setup>
-import { computed } from 'vue';
+<script>
 import { Link } from '@inertiajs/vue3';
 
-const whatsappUrl = computed(() => {
-    const phone = '1234567890'; // Placeholder number
-    const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
-    return `https://wa.me/${phone}?text=${message}`;
-});
+export default {
+    components: {
+        Link,
+    },
+    computed: {
+        whatsappUrl() {
+            const phone = '1234567890'; // Placeholder number
+            const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
+            return `https://wa.me/${phone}?text=${message}`;
+        },
+    },
+};
 </script>
 

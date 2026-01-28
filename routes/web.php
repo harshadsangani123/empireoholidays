@@ -17,3 +17,6 @@ Route::get('/domestic', [HomeController::class, 'domestic'])->name('domestic');
 
 // Contact Us page
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+
+// Package Detail page
+Route::get('/package/{type}/{id}', [HomeController::class, 'packageDetail'])->name('package.detail');

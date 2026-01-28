@@ -1,5 +1,166 @@
 /* Page-Specific Styles - Hero, Sections, Page Layouts */
 
+/* Video Hero Section */
+.video-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .video-hero {
+        height: 80vh;
+        min-height: 500px;
+    }
+}
+
+.video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    object-fit: cover;
+    background-image: url('https://media.blacktomato.com/2025/02/black-tomato-mob-home.mp4');
+    background-size: cover;
+    background-position: center;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+    z-index: 1;
+}
+
+.video-hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0 40px;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .video-hero-content {
+        padding: 0 20px;
+        text-align: center;
+    }
+}
+
+.video-hero-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 24px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 1024px) {
+    .video-hero-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .video-hero-title {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+    }
+}
+
+.video-hero-subtitle {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 1024px) {
+    .video-hero-subtitle {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .video-hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 32px;
+    }
+}
+
+.video-hero-buttons {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .video-hero-buttons {
+        justify-content: center;
+        gap: 16px;
+    }
+}
+
+.btn-hero {
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition);
+    border: 2px solid;
+    cursor: pointer;
+}
+
+.btn-hero-primary {
+    background-color: rgba(34, 139, 34, 0.9);
+    color: white;
+    border-color: white;
+}
+
+.btn-hero-primary:hover {
+    background-color: rgba(34, 139, 34, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-hero-secondary {
+    background-color: white;
+    color: #222222;
+    border-color: white;
+}
+
+.btn-hero-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .btn-hero {
+        padding: 14px 32px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
 /* Search Section */
 .search-section {
     padding: 40px 0;
@@ -9,118 +170,6 @@
 @media (max-width: 768px) {
     .search-section {
         padding: 24px 0;
-    }
-}
-
-/* Holiday Banner Sections */
-.holiday-banners {
-    padding: 0;
-    margin: 0;
-}
-
-.banner-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    max-width: 100%;
-}
-
-@media (max-width: 768px) {
-    .banner-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-.holiday-banner {
-    position: relative;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    overflow: hidden;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.holiday-banner:hover {
-    transform: scale(1.02);
-}
-
-.holiday-banner:hover .banner-overlay {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.international-banner {
-    background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=800&fit=crop');
-    background-size: cover;
-    background-position: center;
-}
-
-.domestic-banner {
-    background-image: url('https://images.unsplash.com/photo-1534751516649-d43b49f152a9?w=1200&h=800&fit=crop');
-    background-size: cover;
-    background-position: center;
-}
-
-.banner-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    transition: var(--transition);
-}
-
-.banner-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    color: white;
-    padding: 40px;
-}
-
-.banner-content h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.banner-content p {
-    font-size: 1.25rem;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    margin-bottom: 0;
-}
-
-@media (max-width: 1024px) {
-    .banner-content h2 {
-        font-size: 2rem;
-    }
-    
-    .banner-content p {
-        font-size: 1.1rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .holiday-banner {
-        height: 300px;
-    }
-    
-    .banner-content h2 {
-        font-size: 1.75rem;
-    }
-    
-    .banner-content p {
-        font-size: 1rem;
-    }
-    
-    .banner-content {
-        padding: 24px;
     }
 }
 

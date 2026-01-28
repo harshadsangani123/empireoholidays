@@ -27,24 +27,33 @@
     </header>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script>
 import { Link } from '@inertiajs/vue3';
 
-const isMenuOpen = ref(false);
-
-const toggleMenu = () => {
-    isMenuOpen.value = !isMenuOpen.value;
+export default {
+    components: {
+        Link,
+    },
+    data() {
+        return {
+            isMenuOpen: false,
+        };
+    },
+    computed: {
+        whatsappUrl() {
+            const phone = '1234567890'; // Placeholder number
+            const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
+            return `https://wa.me/${phone}?text=${message}`;
+        },
+    },
+    methods: {
+        toggleMenu() {
+            this.isMenuOpen = !this.isMenuOpen;
+        },
+        closeMenu() {
+            this.isMenuOpen = false;
+        },
+    },
 };
-
-const closeMenu = () => {
-    isMenuOpen.value = false;
-};
-
-const whatsappUrl = computed(() => {
-    const phone = '1234567890'; // Placeholder number
-    const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
-    return `https://wa.me/${phone}?text=${message}`;
-});
 </script>
 

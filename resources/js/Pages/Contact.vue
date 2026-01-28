@@ -114,33 +114,44 @@
     </div>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
+<script>
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
-const form = ref({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-});
-
-const whatsappUrl = computed(() => {
-    const phone = '1234567890'; // Placeholder number
-    const message = encodeURIComponent('Hi, I have a travel inquiry.');
-    return `https://wa.me/${phone}?text=${message}`;
-});
-
-const handleSubmit = () => {
-    // Simple alert for now - can be integrated with backend later
-    alert('Thank you for your message! We will get back to you soon.');
-    form.value = {
-        name: '',
-        email: '',
-        phone: '',
-        message: '',
-    };
+export default {
+    components: {
+        Header,
+        Footer,
+    },
+    data() {
+        return {
+            form: {
+                name: '',
+                email: '',
+                phone: '',
+                message: '',
+            },
+        };
+    },
+    computed: {
+        whatsappUrl() {
+            const phone = '1234567890'; // Placeholder number
+            const message = encodeURIComponent('Hi, I have a travel inquiry.');
+            return `https://wa.me/${phone}?text=${message}`;
+        },
+    },
+    methods: {
+        handleSubmit() {
+            // Simple alert for now - can be integrated with backend later
+            alert('Thank you for your message! We will get back to you soon.');
+            this.form = {
+                name: '',
+                email: '',
+                phone: '',
+                message: '',
+            };
+        },
+    },
 };
 </script>
 
