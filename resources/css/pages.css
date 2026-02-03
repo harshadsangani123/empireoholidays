@@ -19,6 +19,36 @@
     }
 }
 
+/* Slider Container */
+.slider-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.slider-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    z-index: 0;
+}
+
+.slider-image.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* Legacy video background styles (kept for compatibility) */
 .video-background {
     position: absolute;
     top: 50%;
@@ -30,7 +60,7 @@
     transform: translate(-50%, -50%);
     z-index: 0;
     object-fit: cover;
-    background-image: url('https://media.blacktomato.com/2025/02/black-tomato-mob-home.mp4');
+    /* background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=1080&fit=crop'); */
     background-size: cover;
     background-position: center;
 }

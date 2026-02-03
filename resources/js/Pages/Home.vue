@@ -3,12 +3,17 @@
         <Header />
         
         <main class="main-content">
-            <!-- Video Hero Section -->
-            <section class="video-hero">
-                <video class="video-background" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=1080&fit=crop">
-                    <source src="https://media.blacktomato.com/2025/02/black-tomato-mob-home.mp4" type="video/mp4" />
-                    <!-- Fallback: If video doesn't load, background image will show via CSS -->
-                </video>
+            <!-- Image Slider Hero Section -->
+            <section class="video-hero slider-hero">
+                <div class="slider-container">
+                    <div 
+                        v-for="(image, index) in sliderImages" 
+                        :key="index"
+                        class="slider-image"
+                        :class="{ active: currentSlide === index }"
+                        :style="{ backgroundImage: `url(${image})` }"
+                    ></div>
+                </div>
                 <div class="video-overlay"></div>
                 <div class="video-hero-content">
                     <div class="container">
@@ -27,7 +32,7 @@
             </section>
             
             <!-- Search Bar Section -->
-            <section class="search-section">
+           <!-- <section class="search-section">
                 <div class="container">
                     <div class="search-bar">
                         <div class="search-item">
@@ -45,7 +50,7 @@
                         <button class="search-button">Search</button>
                     </div>
                 </div>
-            </section>
+            </section> -->
             <!-- Holiday Banner Sections -->
             
             <!-- <section class="holiday-banners">
@@ -134,6 +139,48 @@ export default {
         featuredDomestic: {
             type: Array,
             default: () => [],
+        },
+    },
+    data() {
+        return {
+            currentSlide: 0,
+            sliderImages: [
+                'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=1080&fit=crop',
+                'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&h=1080&fit=crop',
+                'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1920&h=1080&fit=crop',
+                'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920&h=1080&fit=crop',
+                'https://images.unsplash.com/photo-1534751516649-d43b49f152a9?w=1920&h=1080&fit=crop',
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
+            ],
+            autoPlayInterval: null,
+        };
+    },
+    mounted() {
+        this.startAutoPlay();
+    },
+    beforeUnmount() {
+        this.stopAutoPlay();
+    },
+    methods: {
+        startAutoPlay() {
+            this.autoPlayInterval = setInterval(() => {
+                this.nextSlide();
+            }, 5000); // Change slide every 5 seconds
+        },
+        stopAutoPlay() {
+            if (this.autoPlayInterval) {
+                clearInterval(this.autoPlayInterval);
+                this.autoPlayInterval = null;
+            }
+        },
+        nextSlide() {
+            this.currentSlide = (this.currentSlide + 1) % this.sliderImages.length;
+        },
+        prevSlide() {
+            this.currentSlide = (this.currentSlide - 1 + this.sliderImages.length) % this.sliderImages.length;
+        },
+        goToSlide(index) {
+            this.currentSlide = index;
         },
     },
 };
