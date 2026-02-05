@@ -44,15 +44,15 @@
                 <!-- Contact Us Section -->
                 <div class="footer-section">
                     <h3>Contact Us</h3>
-                    <div class="footer-contact-item">
+                    <div class="footer-contact-item" v-if="footerContact.phone">
                         <span>📞</span>
-                        <a href="tel:+1234567890">+1 234 567 890</a>
+                        <a :href="`tel:${footerContact.phone}`">{{ footerContact.phone }}</a>
                     </div>
-                    <div class="footer-contact-item">
+                    <div class="footer-contact-item" v-if="footerContact.email">
                         <span>✉️</span>
-                        <a href="mailto:info@empireoholidays.com">info@empireoholidays.com</a>
+                        <a :href="`mailto:${footerContact.email}`">{{ footerContact.email }}</a>
                     </div>
-                    <div class="footer-contact-item">
+                    <div class="footer-contact-item" v-if="footerContact.whatsapp">
                         <span>💬</span>
                         <a :href="whatsappUrl" target="_blank">WhatsApp Us</a>
                     </div>
@@ -70,15 +70,25 @@
 </template>
 
 <script>
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 export default {
     components: {
         Link,
     },
     computed: {
+        footerContact() {
+            const page = usePage();
+            return page.props.footerContact || {
+                phone: '+1 234 567 890',
+                email: 'info@empireoholidays.com',
+                whatsapp: '1234567890',
+                business_hours: 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM',
+                address: '',
+            };
+        },
         whatsappUrl() {
-            const phone = '1234567890'; // Placeholder number
+            const phone = this.footerContact.whatsapp || '1234567890';
             const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
             return `https://wa.me/${phone}?text=${message}`;
         },
