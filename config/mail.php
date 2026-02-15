@@ -115,4 +115,16 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Inquiry Email Address
+    |--------------------------------------------------------------------------
+    |
+    | This email address will receive all package inquiry submissions.
+    | If not set, it will fall back to the MAIL_FROM_ADDRESS.
+    |
+    */
+
+    'inquiry_email' => env('INQUIRY_EMAIL', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+
 ];

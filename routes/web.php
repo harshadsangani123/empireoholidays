@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InquiryController;
 use Illuminate\Support\Facades\Route;
 
 // Home page
@@ -18,5 +19,9 @@ Route::get('/domestic', [HomeController::class, 'domestic'])->name('domestic');
 // Contact Us page
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
-// Package Detail page
+// Package Inquiry routes (must be before package detail route for proper matching)
+Route::get('/package/{type}/{id}/inquiry', [InquiryController::class, 'show'])->name('package.inquiry');
+Route::post('/inquiry', [InquiryController::class, 'store'])->name('inquiry.store');
+
+// Package Detail page (must be after inquiry route)
 Route::get('/package/{type}/{id}', [HomeController::class, 'packageDetail'])->name('package.detail');

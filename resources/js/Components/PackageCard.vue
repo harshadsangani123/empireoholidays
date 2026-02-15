@@ -5,11 +5,21 @@
             <div class="package-card-content">
                 <h3 class="package-card-title">{{ packageData.name }}</h3>
                 <p class="package-card-description">{{ packageData.description }}</p>
+                <!-- Price display commented out - not showing to users currently -->
+                <!-- <div v-if="packageData.price_per_person" class="package-card-price">
+                    <span class="price-label">Starting from</span>
+                    <span class="price-amount">{{ formatPrice(packageData.price_per_person, packageData.currency) }}</span>
+                    <span class="price-unit">per person</span>
+                </div> -->
+                <!-- Duration display commented out - not showing to users currently -->
+                <!-- <div v-if="packageData.duration" class="package-card-duration">
+                    <span>{{ packageData.duration }}</span>
+                </div> -->
             </div>
         </Link>
-        <a :href="whatsappUrl" target="_blank" class="package-card-button" @click.stop>
+        <Link :href="inquiryUrl" class="package-card-button" @click.stop>
             Inquiry Now
-        </a>
+        </Link>
     </div>
 </template>
 
@@ -50,10 +60,20 @@ export default {
         detailUrl() {
             return `/package/${this.packageType}/${this.packageData.id}`;
         },
-        whatsappUrl() {
-            const phone = '1234567890'; // Placeholder number
-            const message = encodeURIComponent(`Hi, I'm interested in ${this.packageData.name} package.`);
-            return `https://wa.me/${phone}?text=${message}`;
+        inquiryUrl() {
+            return `/package/${this.packageType}/${this.packageData.id}/inquiry`;
+        },
+    },
+    methods: {
+        formatPrice(price, currency = 'INR') {
+            if (!price) return '';
+            const formatter = new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+            return formatter.format(price);
         },
     },
 };

@@ -39,12 +39,61 @@
                             <h2>About {{ package.name }}</h2>
                             <p class="description-text">{{ package.detailedDescription || package.description }}</p>
                             
+                            <!-- Package Info - Price and Duration commented out - not showing to users currently -->
+                            <!-- <div v-if="package.price_per_person || package.duration" class="package-info">
+                                <div v-if="package.price_per_person" class="info-item">
+                                    <h3>Price</h3>
+                                    <p class="price-display">
+                                        <span class="price-amount">{{ formatPrice(package.price_per_person, package.currency) }}</span>
+                                        <span class="price-unit">per person</span>
+                                    </p>
+                                </div>
+                                <div v-if="package.duration" class="info-item">
+                                    <h3>Duration</h3>
+                                    <p>{{ package.duration }}</p>
+                                </div>
+                            </div> -->
+                            
+                            <!-- Inclusions -->
+                            <div v-if="package.inclusions && package.inclusions.length > 0" class="package-section">
+                                <h3>Inclusions</h3>
+                                <ul class="package-list">
+                                    <li v-for="(inclusion, index) in package.inclusions" :key="index">
+                                        {{ inclusion.item || inclusion }}
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Exclusions -->
+                            <div v-if="package.exclusions && package.exclusions.length > 0" class="package-section">
+                                <h3>Exclusions</h3>
+                                <ul class="package-list">
+                                    <li v-for="(exclusion, index) in package.exclusions" :key="index">
+                                        {{ exclusion.item || exclusion }}
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Itinerary -->
+                            <div v-if="package.itinerary && package.itinerary.length > 0" class="package-section">
+                                <h3>Itinerary</h3>
+                                <div class="itinerary-list">
+                                    <div v-for="(day, index) in package.itinerary" :key="index" class="itinerary-item">
+                                        <div class="itinerary-day">
+                                            <strong>{{ day.day || `Day ${index + 1}` }}</strong>
+                                            <span v-if="day.title"> - {{ day.title }}</span>
+                                        </div>
+                                        <p v-if="day.description" class="itinerary-description">{{ day.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <!-- Inquiry Button -->
                             <div class="inquiry-section">
-                                <a :href="whatsappUrl" target="_blank" class="btn btn-primary btn-large">
+                                <Link :href="inquiryUrl" class="btn btn-primary btn-large">
                                     Inquiry Now
-                                </a>
-                                <p class="inquiry-note">Click to contact us on WhatsApp for more details and booking</p>
+                                </Link>
+                                <p class="inquiry-note">Fill out the inquiry form and we'll get back to you soon</p>
                             </div>
                         </div>
                     </div>
@@ -106,10 +155,8 @@ export default {
         };
     },
     computed: {
-        whatsappUrl() {
-            const phone = '1234567890'; // Placeholder number
-            const message = encodeURIComponent(`Hi, I'm interested in ${this.package.name} package. Please provide more details.`);
-            return `https://wa.me/${phone}?text=${message}`;
+        inquiryUrl() {
+            return `/package/${this.package.type}/${this.package.id}/inquiry`;
         },
     },
     methods: {
@@ -131,6 +178,16 @@ export default {
             if (this.currentPhotoIndex > 0) {
                 this.currentPhotoIndex--;
             }
+        },
+        formatPrice(price, currency = 'INR') {
+            if (!price) return '';
+            const formatter = new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+            return formatter.format(price);
         },
     },
 };

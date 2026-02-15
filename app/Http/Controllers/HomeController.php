@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Data\Packages;
+use App\Models\Package;
 use Inertia\Inertia;
 
 class HomeController extends Controller
@@ -13,8 +13,20 @@ class HomeController extends Controller
     public function index()
     {
         return Inertia::render('Home', [
-            'featuredInternational' => Packages::getFeaturedInternational(4),
-            'featuredDomestic' => Packages::getFeaturedDomestic(4),
+            'featuredInternational' => Package::international()
+                ->published()
+                ->featured()
+                ->orderBy('sort_order')
+                ->limit(4)
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+            'featuredDomestic' => Package::domestic()
+                ->published()
+                ->featured()
+                ->orderBy('sort_order')
+                ->limit(4)
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
         ]);
     }
 
@@ -32,7 +44,11 @@ class HomeController extends Controller
     public function international()
     {
         return Inertia::render('International', [
-            'packages' => Packages::getInternationalPackages(),
+            'packages' => Package::international()
+                ->published()
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
         ]);
     }
 
@@ -42,7 +58,11 @@ class HomeController extends Controller
     public function domestic()
     {
         return Inertia::render('Domestic', [
-            'packages' => Packages::getDomesticPackages(),
+            'packages' => Package::domestic()
+                ->published()
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
         ]);
     }
 
@@ -59,21 +79,61 @@ class HomeController extends Controller
      */
     public function packageDetail(string $type, int $id)
     {
-        $package = null;
-        
-        if ($type === 'international') {
-            $package = Packages::getInternationalPackageById($id);
-        } elseif ($type === 'domestic') {
-            $package = Packages::getDomesticPackageById($id);
-        }
+        $package = Package::where('type', $type)
+            ->where('id', $id)
+            ->published()
+            ->first();
 
         if (!$package) {
             abort(404, 'Package not found');
         }
 
         return Inertia::render('PackageDetail', [
-            'package' => $package,
+            'package' => $this->formatPackageForDetail($package),
         ]);
+    }
+
+    /**
+     * Format package data for frontend (card view)
+     */
+    private function formatPackageForFrontend(Package $package): array
+    {
+        return [
+            'id' => $package->id,
+            'name' => $package->name,
+            'country' => $package->country,
+            'state' => $package->state,
+            'description' => $package->description,
+            'image' => $package->main_image_url ?? $package->image,
+            'price_per_person' => $package->price_per_person,
+            'currency' => $package->currency,
+            'duration' => $package->duration,
+            'type' => $package->type,
+        ];
+    }
+
+    /**
+     * Format package data for detail page
+     */
+    private function formatPackageForDetail(Package $package): array
+    {
+        return [
+            'id' => $package->id,
+            'name' => $package->name,
+            'country' => $package->country,
+            'state' => $package->state,
+            'description' => $package->description,
+            'detailedDescription' => $package->getDetailedDescription(),
+            'image' => $package->main_image_url ?? $package->image,
+            'photos' => $package->photos,
+            'price_per_person' => $package->price_per_person,
+            'currency' => $package->currency,
+            'duration' => $package->duration,
+            'inclusions' => $package->inclusions ?? [],
+            'exclusions' => $package->exclusions ?? [],
+            'itinerary' => $package->itinerary ?? [],
+            'type' => $package->type,
+        ];
     }
 }
 

@@ -14,9 +14,9 @@
             </nav>
             
             <div class="header-actions">
-                <a :href="whatsappUrl" target="_blank" class="btn-inquiry">
+                <Link href="/contact" class="btn-inquiry">
                     Inquiry Now
-                </a>
+                </Link>
                 <button class="menu-toggle" :class="{ active: isMenuOpen }" @click="toggleMenu">
                     <span></span>
                     <span></span>
@@ -38,13 +38,6 @@ export default {
         return {
             isMenuOpen: false,
         };
-    },
-    computed: {
-        whatsappUrl() {
-            const phone = '1234567890'; // Placeholder number
-            const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
-            return `https://wa.me/${phone}?text=${message}`;
-        },
     },
     methods: {
         toggleMenu() {
