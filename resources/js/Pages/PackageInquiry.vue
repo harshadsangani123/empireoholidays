@@ -120,6 +120,12 @@
                                 <input type="hidden" v-model="form.package_name" />
                                 <input type="hidden" v-model="form.package_type" />
                                 
+                                <!-- Google reCAPTCHA -->
+                                <div class="form-group" v-if="recaptchaSiteKey">
+                                    <div class="g-recaptcha" :data-sitekey="recaptchaSiteKey" ref="recaptcha"></div>
+                                    <span v-if="errors['g-recaptcha-response']" class="error-text">{{ errors['g-recaptcha-response'] }}</span>
+                                </div>
+                                
                                 <div class="form-actions">
                                     <button 
                                         type="submit" 
@@ -164,6 +170,10 @@ export default {
             type: Object,
             required: true,
         },
+        recaptchaSiteKey: {
+            type: String,
+            default: null,
+        },
     },
     data() {
         return {
@@ -181,6 +191,7 @@ export default {
             errors: {},
             submitting: false,
             success: false,
+            recaptchaWidgetId: null,
         };
     },
     computed: {
@@ -192,17 +203,73 @@ export default {
             return `/package/${this.package.type}/${this.package.id}`;
         },
     },
+    mounted() {
+        // Load Google reCAPTCHA script
+        if (this.recaptchaSiteKey) {
+            if (!window.grecaptcha) {
+                const script = document.createElement('script');
+                script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+                script.async = true;
+                script.defer = true;
+                script.onload = () => {
+                    this.renderRecaptcha();
+                };
+                document.head.appendChild(script);
+            } else {
+                // If script already loaded, render immediately
+                this.$nextTick(() => {
+                    this.renderRecaptcha();
+                });
+            }
+        }
+    },
+    beforeUnmount() {
+        // Reset reCAPTCHA when component is destroyed
+        if (this.recaptchaWidgetId !== null && window.grecaptcha) {
+            window.grecaptcha.reset(this.recaptchaWidgetId);
+        }
+    },
     methods: {
+        renderRecaptcha() {
+            if (this.$refs.recaptcha && window.grecaptcha && this.recaptchaSiteKey) {
+                this.recaptchaWidgetId = window.grecaptcha.render(this.$refs.recaptcha, {
+                    sitekey: this.recaptchaSiteKey,
+                });
+            }
+        },
         handleSubmit() {
             this.errors = {};
+            
+            // Get reCAPTCHA response
+            let recaptchaResponse = '';
+            if (this.recaptchaSiteKey && window.grecaptcha && this.recaptchaWidgetId !== null) {
+                recaptchaResponse = window.grecaptcha.getResponse(this.recaptchaWidgetId);
+            }
+            
+            // Validate reCAPTCHA if site key is configured
+            if (this.recaptchaSiteKey && !recaptchaResponse) {
+                this.errors['g-recaptcha-response'] = 'Please complete the reCAPTCHA verification.';
+                return;
+            }
+            
             this.submitting = true;
             
-            router.post('/inquiry', this.form, {
+            // Add reCAPTCHA response to form data
+            const formData = {
+                ...this.form,
+                'g-recaptcha-response': recaptchaResponse,
+            };
+            
+            router.post('/inquiry', formData, {
                 preserveScroll: true,
                 onSuccess: (page) => {
                     this.success = true;
                     this.submitting = false;
                     this.errors = {};
+                    // Reset reCAPTCHA
+                    if (this.recaptchaWidgetId !== null && window.grecaptcha) {
+                        window.grecaptcha.reset(this.recaptchaWidgetId);
+                    }
                     // Reset form
                     this.form = {
                         name: '',
@@ -220,6 +287,10 @@ export default {
                     this.errors = errors;
                     this.submitting = false;
                     this.success = false;
+                    // Reset reCAPTCHA on error
+                    if (this.recaptchaWidgetId !== null && window.grecaptcha) {
+                        window.grecaptcha.reset(this.recaptchaWidgetId);
+                    }
                 },
             });
         },
@@ -364,6 +435,18 @@ export default {
     .form-actions {
         flex-direction: column;
     }
+    
+    .g-recaptcha {
+        transform: scale(0.85);
+        transform-origin: 0 0;
+    }
+}
+
+/* reCAPTCHA Styling */
+.g-recaptcha {
+    margin: 20px 0;
+    display: flex;
+    justify-content: flex-start;
 }
 </style>
 

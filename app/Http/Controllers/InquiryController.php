@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\PackageInquiryMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,6 +28,7 @@ class InquiryController extends Controller
                 'country' => $package->country,
                 'state' => $package->state,
             ],
+            'recaptchaSiteKey' => config('services.recaptcha.site_key'),
         ]);
     }
 
@@ -35,6 +37,33 @@ class InquiryController extends Controller
      */
     public function store(Request $request)
     {
+        // Verify reCAPTCHA if configured
+        $recaptchaSecretKey = config('services.recaptcha.secret_key');
+        if ($recaptchaSecretKey) {
+            $recaptchaResponse = $request->input('g-recaptcha-response');
+            
+            if (!$recaptchaResponse) {
+                return back()->withErrors([
+                    'g-recaptcha-response' => 'Please complete the reCAPTCHA verification.',
+                ])->withInput();
+            }
+            
+            // Verify reCAPTCHA with Google
+            $verifyResponse = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+                'secret' => $recaptchaSecretKey,
+                'response' => $recaptchaResponse,
+                'remoteip' => $request->ip(),
+            ]);
+            
+            $verifyResult = $verifyResponse->json();
+            
+            if (!isset($verifyResult['success']) || !$verifyResult['success']) {
+                return back()->withErrors([
+                    'g-recaptcha-response' => 'reCAPTCHA verification failed. Please try again.',
+                ])->withInput();
+            }
+        }
+        
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
