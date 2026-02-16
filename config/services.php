@@ -40,4 +40,12 @@ return [
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),
     ],
 
+    'brevo' => [
+        'smtp_host' => env('BREVO_SMTP_HOST', 'smtp-relay.brevo.com'),
+        'smtp_port' => env('BREVO_SMTP_PORT', 587),
+        'smtp_encryption' => env('BREVO_SMTP_ENCRYPTION', 'tls'),
+        'smtp_username' => env('BREVO_SMTP_USERNAME'),
+        'smtp_password' => env('BREVO_SMTP_PASSWORD'),
+    ],
+
 ];

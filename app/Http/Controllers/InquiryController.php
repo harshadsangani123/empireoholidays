@@ -98,8 +98,15 @@ class InquiryController extends Controller
             // Get the inquiry email from config, fallback to admin email
             $inquiryEmail = config('mail.inquiry_email');
             
-            // Send email
-            Mail::to($inquiryEmail)->send(new PackageInquiryMail($inquiryData));
+            // Determine which mailer to use (Brevo if configured, otherwise default)
+            $mailer = null;
+            if (config('services.brevo.smtp_username') && config('services.brevo.smtp_password')) {
+                $mailer = 'brevo';
+            }
+            
+            // Send email using specified mailer
+            $mail = Mail::mailer($mailer);
+            $mail->to($inquiryEmail)->send(new PackageInquiryMail($inquiryData));
 
             return back()->with('success', true);
         } catch (\Exception $e) {
