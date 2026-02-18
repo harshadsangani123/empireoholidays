@@ -122,7 +122,7 @@
                                 
                                 <!-- Google reCAPTCHA -->
                                 <div class="form-group" v-if="recaptchaSiteKey">
-                                    <div class="g-recaptcha" :data-sitekey="recaptchaSiteKey" ref="recaptcha"></div>
+                                    <div class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
                                     <span v-if="errors['g-recaptcha-response']" class="error-text">{{ errors['g-recaptcha-response'] }}</span>
                                 </div>
                                 
@@ -191,7 +191,6 @@ export default {
             errors: {},
             submitting: false,
             success: false,
-            recaptchaWidgetId: null,
         };
     },
     computed: {
@@ -204,46 +203,26 @@ export default {
         },
     },
     mounted() {
-        // Load Google reCAPTCHA script
-        if (this.recaptchaSiteKey) {
-            if (!window.grecaptcha) {
-                const script = document.createElement('script');
-                script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
-                script.async = true;
-                script.defer = true;
-                script.onload = () => {
-                    this.renderRecaptcha();
-                };
-                document.head.appendChild(script);
-            } else {
-                // If script already loaded, render immediately
-                this.$nextTick(() => {
-                    this.renderRecaptcha();
-                });
-            }
-        }
-    },
-    beforeUnmount() {
-        // Reset reCAPTCHA when component is destroyed
-        if (this.recaptchaWidgetId !== null && window.grecaptcha) {
-            window.grecaptcha.reset(this.recaptchaWidgetId);
+        // Load Google reCAPTCHA script (auto-render mode)
+        if (this.recaptchaSiteKey && !document.querySelector('script[src*="https://www.google.com/recaptcha/api.js"]')) {
+            const script = document.createElement('script');
+            script.src = 'https://www.google.com/recaptcha/api.js';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
         }
     },
     methods: {
-        renderRecaptcha() {
-            if (this.$refs.recaptcha && window.grecaptcha && this.recaptchaSiteKey) {
-                this.recaptchaWidgetId = window.grecaptcha.render(this.$refs.recaptcha, {
-                    sitekey: this.recaptchaSiteKey,
-                });
-            }
-        },
         handleSubmit() {
             this.errors = {};
             
-            // Get reCAPTCHA response
+            // Get reCAPTCHA response from DOM
             let recaptchaResponse = '';
-            if (this.recaptchaSiteKey && window.grecaptcha && this.recaptchaWidgetId !== null) {
-                recaptchaResponse = window.grecaptcha.getResponse(this.recaptchaWidgetId);
+            if (this.recaptchaSiteKey) {
+                const recaptchaElement = document.getElementById('g-recaptcha-response');
+                if (recaptchaElement) {
+                    recaptchaResponse = recaptchaElement.value;
+                }
             }
             
             // Validate reCAPTCHA if site key is configured
@@ -266,10 +245,6 @@ export default {
                     this.success = true;
                     this.submitting = false;
                     this.errors = {};
-                    // Reset reCAPTCHA
-                    if (this.recaptchaWidgetId !== null && window.grecaptcha) {
-                        window.grecaptcha.reset(this.recaptchaWidgetId);
-                    }
                     // Reset form
                     this.form = {
                         name: '',
@@ -287,10 +262,6 @@ export default {
                     this.errors = errors;
                     this.submitting = false;
                     this.success = false;
-                    // Reset reCAPTCHA on error
-                    if (this.recaptchaWidgetId !== null && window.grecaptcha) {
-                        window.grecaptcha.reset(this.recaptchaWidgetId);
-                    }
                 },
             });
         },
