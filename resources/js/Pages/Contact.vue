@@ -16,52 +16,71 @@
                         <!-- Contact Form -->
                         <div class="contact-form">
                             <h2 style="margin-bottom: 24px;">Send us a Message</h2>
-                            <form @submit.prevent="handleSubmit">
+                            <form v-if="!success" @submit.prevent="handleSubmit">
+                                <div v-if="errors.message" class="error-message">
+                                    {{ errors.message }}
+                                </div>
                                 <div class="form-group">
                                     <label class="form-label">Name</label>
                                     <input 
                                         type="text" 
-                                        class="form-input" 
+                                        class="form-input"
+                                        :class="{ error: errors.name }"
                                         v-model="form.name"
                                         required
                                         placeholder="Your full name"
                                     />
+                                    <span v-if="errors.name" class="error-text">{{ errors.name }}</span>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
                                     <input 
                                         type="email" 
-                                        class="form-input" 
+                                        class="form-input"
+                                        :class="{ error: errors.email }"
                                         v-model="form.email"
                                         required
                                         placeholder="your.email@example.com"
                                     />
+                                    <span v-if="errors.email" class="error-text">{{ errors.email }}</span>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Phone</label>
                                     <input 
                                         type="tel" 
-                                        class="form-input" 
+                                        class="form-input"
+                                        :class="{ error: errors.phone }"
                                         v-model="form.phone"
                                         required
                                         placeholder="+1 234 567 890"
                                     />
+                                    <span v-if="errors.phone" class="error-text">{{ errors.phone }}</span>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label class="form-label">Message</label>
                                     <textarea 
-                                        class="form-textarea" 
+                                        class="form-textarea"
+                                        :class="{ error: errors.message }"
                                         v-model="form.message"
                                         required
                                         placeholder="Tell us about your travel plans..."
                                     ></textarea>
+                                    <span v-if="errors.message" class="error-text">{{ errors.message }}</span>
                                 </div>
                                 
-                                <button type="submit" class="form-submit">Send Message</button>
+                                <button type="submit" class="form-submit" :disabled="submitting">
+                                    <span v-if="submitting">Sending...</span>
+                                    <span v-else>Send Message</span>
+                                </button>
                             </form>
+
+                            <div v-if="success" class="success-message">
+                                <h3>Thank you!</h3>
+                                <p>Your message has been sent successfully. We will get back to you soon.</p>
+                            </div>
                         </div>
                         
                         <!-- Contact Information -->
@@ -115,6 +134,7 @@
 </template>
 
 <script>
+import { router } from '@inertiajs/vue3';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
@@ -131,6 +151,9 @@ export default {
                 phone: '',
                 message: '',
             },
+            errors: {},
+            submitting: false,
+            success: false,
         };
     },
     computed: {
@@ -142,14 +165,28 @@ export default {
     },
     methods: {
         handleSubmit() {
-            // Simple alert for now - can be integrated with backend later
-            alert('Thank you for your message! We will get back to you soon.');
-            this.form = {
-                name: '',
-                email: '',
-                phone: '',
-                message: '',
-            };
+            this.errors = {};
+            this.submitting = true;
+
+            router.post('/contact', this.form, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.success = true;
+                    this.submitting = false;
+                    this.errors = {};
+                    this.form = {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        message: '',
+                    };
+                },
+                onError: (errors) => {
+                    this.errors = errors;
+                    this.submitting = false;
+                    this.success = false;
+                },
+            });
         },
     },
 };

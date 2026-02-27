@@ -23,12 +23,9 @@
                     </div>
                 </div>
                 
-                <!-- International Section -->
-                <div class="footer-section">
-                    <h3>International</h3>
-                    <div class="footer-links">
-                        <Link href="/domestic" class="footer-link">Domestic Packages</Link>
-                    </div>
+                <!-- Logo Section (replaces International) -->
+                <div class="footer-section footer-logo-section">
+                    <img src="../../images/empireo-logo.jpg" alt="Empireo Holidays" class="footer-logo">
                 </div>
                 
                 <!-- Domestic Section -->
@@ -61,8 +58,7 @@
             
             <div class="footer-bottom">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-                    <p style="margin: 0;">© 2024 EmpireoHolidays. All rights reserved.</p>
-                    <p style="margin: 0;">Powered by Laravel & Vue.js</p>
+                    <p style="margin: 0;">© 2026 EmpireoHolidays. All rights reserved.</p>
                 </div>
             </div>
         </div>
@@ -80,10 +76,10 @@ export default {
         footerContact() {
             const page = usePage();
             return page.props.footerContact || {
-                phone: '+1 234 567 890',
-                email: 'info@empireoholidays.com',
+                phone: '+9016393892',
+                email: 'empireoholidays@gmail.com',
                 whatsapp: '1234567890',
-                business_hours: 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM',
+                business_hours: 'Monday - Sunday: 9:00 AM - 7:00 PM',
                 address: '',
             };
         },

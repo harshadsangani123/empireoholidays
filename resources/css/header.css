@@ -32,16 +32,27 @@
 
 /* Logo */
 .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
+    display: inline-flex;
+    align-items: center;
     cursor: pointer;
     transition: var(--transition);
 }
 
+.logo-image {
+    display: block;
+    height: 48px;
+    width: auto;
+}
+
+@media (max-width: 768px) {
+    .logo-image {
+        height: 36px;
+    }
+}
+
 .logo:hover {
-    opacity: 0.8;
-    transform: scale(1.05);
+    opacity: 0.9;
+    transform: scale(1.02);
 }
 
 /* Navigation */

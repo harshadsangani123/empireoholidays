@@ -123,6 +123,7 @@ import { Link } from '@inertiajs/vue3';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 import PackageCard from '../Components/PackageCard.vue';
+import heroLogo from '../../images/empireo-logo.jpg';
 
 export default {
     components: {
@@ -145,7 +146,6 @@ export default {
         return {
             currentSlide: 0,
             sliderImages: [
-                'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=1080&fit=crop',
                 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1920&h=1080&fit=crop',
                 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1920&h=1080&fit=crop',
                 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920&h=1080&fit=crop',
@@ -153,6 +153,7 @@ export default {
                 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
             ],
             autoPlayInterval: null,
+            heroLogo,
         };
     },
     mounted() {

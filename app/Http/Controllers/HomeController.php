@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use App\Mail\ContactFormMail;
 
 class HomeController extends Controller
 {
@@ -72,6 +76,52 @@ class HomeController extends Controller
     public function contact()
     {
         return Inertia::render('Contact');
+    }
+
+    /**
+     * Handle Contact Us form submission
+     */
+    public function submitContact(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'message' => 'required|string|min:10|max:2000',
+        ], [
+            'name.required' => 'Please enter your name.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'phone.required' => 'Please enter your phone number.',
+            'message.required' => 'Please enter your message.',
+            'message.min' => 'Message must be at least 10 characters.',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $data = $validator->validated();
+
+            // Get the inquiry email from config, fallback to app from address
+            $inquiryEmail = config('mail.inquiry_email') ?: config('mail.from.address');
+
+            // Determine which mailer to use (Brevo if configured, otherwise default)
+            $useBrevo = config('services.brevo.smtp_username') && config('services.brevo.smtp_password');
+            $mail = $useBrevo ? Mail::mailer('brevo') : Mail::mailer();
+
+            $mail->to($inquiryEmail)
+                ->send(new ContactFormMail($data));
+
+            return back()->with('success', true);
+        } catch (\Exception $e) {
+            \Log::error('Contact email failed: ' . $e->getMessage());
+
+            return back()->withErrors([
+                'message' => 'Sorry, there was an error sending your message. Please try again later or contact us directly.',
+            ])->withInput();
+        }
     }
 
     /**

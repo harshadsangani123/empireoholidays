@@ -18,6 +18,7 @@ Route::get('/domestic', [HomeController::class, 'domestic'])->name('domestic');
 
 // Contact Us page
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'submitContact'])->name('contact.submit');
 
 // Package Inquiry routes (must be before package detail route for proper matching)
 Route::get('/package/{type}/{id}/inquiry', [InquiryController::class, 'show'])->name('package.inquiry');

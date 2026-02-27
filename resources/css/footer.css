@@ -60,6 +60,18 @@
     color: var(--text-color);
 }
 
+.footer-logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-logo {
+    max-height: 80px;
+    width: auto;
+    display: block;
+}
+
 .footer-links {
     display: flex;
     flex-direction: column;

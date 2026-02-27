@@ -2,7 +2,7 @@
     <header class="header">
         <div class="header-container">
             <Link href="/" class="logo">
-                EmpireoHolidays
+                <img :src="logo" alt="Empireo Holidays" class="logo-image">
             </Link>
             
             <nav class="nav" :class="{ active: isMenuOpen }">
@@ -29,6 +29,7 @@
 
 <script>
 import { Link } from '@inertiajs/vue3';
+import logo from '../../images/empireo-logo.jpg';
 
 export default {
     components: {
@@ -37,6 +38,7 @@ export default {
     data() {
         return {
             isMenuOpen: false,
+            logo,
         };
     },
     methods: {

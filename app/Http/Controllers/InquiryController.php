@@ -99,13 +99,10 @@ class InquiryController extends Controller
             $inquiryEmail = config('mail.inquiry_email');
             
             // Determine which mailer to use (Brevo if configured, otherwise default)
-            $mailer = null;
-            if (config('services.brevo.smtp_username') && config('services.brevo.smtp_password')) {
-                $mailer = 'brevo';
-            }
+            $useBrevo = config('services.brevo.smtp_username') && config('services.brevo.smtp_password');
+            $mail = $useBrevo ? Mail::mailer('brevo') : Mail::mailer();
             
             // Send email using specified mailer
-            $mail = Mail::mailer($mailer);
             $mail->to($inquiryEmail)->send(new PackageInquiryMail($inquiryData));
 
             return back()->with('success', true);
