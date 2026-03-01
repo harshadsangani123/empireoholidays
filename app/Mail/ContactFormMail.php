@@ -27,7 +27,12 @@ class ContactFormMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        // Use verified sender email - use MAIL_FROM_ADDRESS if set, otherwise fallback to inquiry email
+        $fromAddress = config('mail.from.address');
+        $fromName = config('mail.from.name', config('app.name'));
+        
         return new Envelope(
+            from: new \Illuminate\Mail\Mailables\Address($fromAddress, $fromName),
             subject: 'New Contact Message - ' . config('app.name'),
         );
     }

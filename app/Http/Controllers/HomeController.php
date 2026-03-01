@@ -108,40 +108,16 @@ class HomeController extends Controller
             $inquiryEmail = config('mail.inquiry_email') ?: config('mail.from.address');
 
             // Determine which mailer to use (Brevo if configured, otherwise default)
-            $brevoUsername = config('services.brevo.smtp_username');
-            $brevoPassword = config('services.brevo.smtp_password');
-            $brevoMailerUsername = config('mail.mailers.brevo.username');
-            $useBrevo = !empty($brevoUsername) && !empty($brevoPassword);
-            
-            // Log configuration for debugging
-            \Log::info('Brevo config check - services.brevo.smtp_username: ' . ($brevoUsername ? substr($brevoUsername, 0, 3) . '***' : 'NOT SET'));
-            \Log::info('Brevo config check - mail.mailers.brevo.username: ' . ($brevoMailerUsername ? substr($brevoMailerUsername, 0, 3) . '***' : 'NOT SET'));
-            
-            if ($useBrevo) {
-                // Verify the mailer config matches and check for common misconfigurations
-                if ($brevoMailerUsername !== $brevoUsername) {
-                    \Log::warning('Brevo username mismatch! services.brevo: ' . substr($brevoUsername, 0, 3) . '*** vs mail.mailers.brevo: ' . ($brevoMailerUsername ? substr($brevoMailerUsername, 0, 3) . '***' : 'NOT SET'));
-                }
-                
-                // Check if username looks like a Gmail address (common mistake)
-                if (str_contains(strtolower($brevoMailerUsername), '@gmail.com')) {
-                    \Log::error('BREVO_SMTP_USERNAME appears to be a Gmail address! It should be your Brevo SMTP username, not your Gmail.');
-                }
-                
-                \Log::info('Using Brevo mailer');
-            } else {
-                \Log::info('Using default mailer (Brevo not configured)');
-            }
-            
+            $useBrevo = config('services.brevo.smtp_username') && config('services.brevo.smtp_password');
             $mail = $useBrevo ? Mail::mailer('brevo') : Mail::mailer();
 
+            // Send the email
             $mail->to($inquiryEmail)
                 ->send(new ContactFormMail($data));
 
             return back()->with('success', true);
         } catch (\Exception $e) {
             \Log::error('Contact email failed: ' . $e->getMessage());
-            \Log::error('Contact email failed - Stack trace: ' . $e->getTraceAsString());
 
             return back()->withErrors([
                 'message' => 'Sorry, there was an error sending your message. Please try again later or contact us directly.',
