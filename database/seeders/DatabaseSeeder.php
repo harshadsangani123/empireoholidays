@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed footer CMS pages
+        $this->call([
+            FooterCmsPageSeeder::class,
+        ]);
+
         // User::factory(10)->create();
 
         User::factory()->create([
