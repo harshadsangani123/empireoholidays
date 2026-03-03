@@ -18,13 +18,15 @@ class DatabaseSeeder extends Seeder
         // Seed footer CMS pages
         $this->call([
             FooterCmsPageSeeder::class,
+            ContactCmsPageSeeder::class,
+            PackageSeeder::class,
         ]);
 
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
     }
 }

@@ -70,7 +70,7 @@ class InquiryController extends Controller
             'phone' => 'required|string|max:20',
             'travel_date' => 'nullable|date|after_or_equal:today',
             'number_of_travelers' => 'nullable|integer|min:1|max:50',
-            'message_text' => 'required|string|min:10|max:2000',
+            'message_text' => 'nullable|string|max:2000',
             'package_id' => 'required|exists:packages,id',
             'package_name' => 'required|string',
             'package_type' => 'required|in:international,domestic',
@@ -83,8 +83,6 @@ class InquiryController extends Controller
             'travel_date.after_or_equal' => 'Travel date must be today or in the future.',
             'number_of_travelers.integer' => 'Number of travelers must be a valid number.',
             'number_of_travelers.min' => 'Number of travelers must be at least 1.',
-            'message_text.required' => 'Please enter your message.',
-            'message_text.min' => 'Message must be at least 10 characters.',
             'package_id.exists' => 'Invalid package selected.',
         ]);
 

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\CmsPages\Schemas;
 
 use App\Models\CmsPage;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -18,55 +17,44 @@ class CmsPageForm
     {
         return $schema
             ->components([
-                Section::make('Basic Information')
-                    ->schema([
-                        TextInput::make('title')
-                            ->required()
-                            ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, $state, callable $set) {
-                                if ($operation !== 'create') {
-                                    return;
-                                }
-                                $set('slug', Str::slug($state));
-                            }),
-                        TextInput::make('slug')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique(CmsPage::class, 'slug', ignoreRecord: true)
-                            ->alphaDash(),
-                        Select::make('page_type')
-                            ->label('Page Type')
-                            ->options(CmsPage::getPageTypes())
-                            ->required()
-                            ->searchable()
-                            ->live()
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                // Reset content when page type changes
-                                $set('content', []);
-                            }),
-                        Toggle::make('is_published')
-                            ->label('Published')
-                            ->default(true),
-                    ])
-                    ->columns(2),
-                
-                Section::make('Content')
-                    ->schema([
-                        static::getContentFields(),
-                    ])
-                    ->visible(fn ($get) => $get('page_type') !== null),
-                
-                Section::make('Meta Data')
-                    ->schema([
-                        KeyValue::make('meta_data')
-                            ->label('Meta Data (SEO)')
-                            ->keyLabel('Key')
-                            ->valueLabel('Value')
-                            ->helperText('Add SEO metadata like meta_title, meta_description, etc.')
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
+                TextInput::make('title')
+                    ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (string $operation, $state, callable $set) {
+                        if ($operation !== 'create') {
+                            return;
+                        }
+                        $set('slug', Str::slug($state));
+                    }),
+                TextInput::make('slug')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(CmsPage::class, 'slug', ignoreRecord: true)
+                    ->alphaDash(),
+                Select::make('page_type')
+                    ->label('Page Type')
+                    ->options(CmsPage::getPageTypes())
+                    ->required()
+                    ->searchable()
+                    ->live()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        // Reset content when page type changes
+                        $set('content', []);
+                    }),
+                Toggle::make('is_published')
+                    ->label('Published')
+                    ->default(true),
+
+                // Content fields (vary based on page type)
+                ...static::getContentFields(),
+
+                // Meta data (SEO)
+                KeyValue::make('meta_data')
+                    ->label('Meta Data (SEO)')
+                    ->keyLabel('Key')
+                    ->valueLabel('Value')
+                    ->helperText('Add SEO metadata like meta_title, meta_description, etc.'),
             ]);
     }
 
@@ -76,30 +64,30 @@ class CmsPageForm
             TextInput::make('content.phone')
                 ->label('Phone')
                 ->tel()
-                ->visible(fn ($get) => $get('page_type') === 'footer')
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('+1 234 567 890'),
             
             TextInput::make('content.email')
                 ->label('Email')
                 ->email()
-                ->visible(fn ($get) => $get('page_type') === 'footer')
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('info@empireoholidays.com'),
             
             TextInput::make('content.whatsapp')
                 ->label('WhatsApp Number')
-                ->visible(fn ($get) => $get('page_type') === 'footer')
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('1234567890'),
             
             Textarea::make('content.business_hours')
                 ->label('Business Hours')
                 ->rows(3)
-                ->visible(fn ($get) => $get('page_type') === 'footer')
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM'),
             
             Textarea::make('content.address')
                 ->label('Address')
                 ->rows(3)
-                ->visible(fn ($get) => $get('page_type') === 'footer')
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('Your business address here'),
             
             // Generic content field for other page types
@@ -107,7 +95,7 @@ class CmsPageForm
                 ->label('Content')
                 ->keyLabel('Key')
                 ->valueLabel('Value')
-                ->visible(fn ($get) => $get('page_type') !== 'footer' && $get('page_type') !== null)
+                ->visible(fn ($get) => $get('page_type') !== null && ! in_array($get('page_type'), ['footer', 'contact'], true))
                 ->helperText('Add content fields as key-value pairs'),
         ];
     }

@@ -36,19 +36,25 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        // Fetch footer Contact Us CMS data
-        $footerContact = CmsPage::where('page_type', 'footer')
+        // Prefer contact page CMS data for global contact details
+        $contactPage = CmsPage::where('page_type', 'contact')
             ->where('is_published', true)
             ->first();
 
-        $footerContactData = null;
-        if ($footerContact) {
+        // Fallback to any footer-type CMS page if contact page is missing
+        if (! $contactPage) {
+            $contactPage = CmsPage::where('page_type', 'footer')
+                ->where('is_published', true)
+                ->first();
+        }
+
+        if ($contactPage) {
             $footerContactData = [
-                'phone' => $footerContact->getContentField('phone', '+1 234 567 890'),
-                'email' => $footerContact->getContentField('email', 'info@empireoholidays.com'),
-                'whatsapp' => $footerContact->getContentField('whatsapp', '1234567890'),
-                'business_hours' => $footerContact->getContentField('business_hours', 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM'),
-                'address' => $footerContact->getContentField('address', ''),
+                'phone' => $contactPage->getContentField('phone', '+1 234 567 890'),
+                'email' => $contactPage->getContentField('email', 'info@empireoholidays.com'),
+                'whatsapp' => $contactPage->getContentField('whatsapp', '1234567890'),
+                'business_hours' => $contactPage->getContentField('business_hours', 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM'),
+                'address' => $contactPage->getContentField('address', ''),
             ];
         } else {
             // Fallback to default values if no CMS page exists

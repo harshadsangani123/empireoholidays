@@ -27,7 +27,7 @@
                                         class="form-input"
                                         :class="{ error: errors.name }"
                                         v-model="form.name"
-                                        required
+                                        
                                         placeholder="Your full name"
                                     />
                                     <span v-if="errors.name" class="error-text">{{ errors.name }}</span>
@@ -40,7 +40,7 @@
                                         class="form-input"
                                         :class="{ error: errors.email }"
                                         v-model="form.email"
-                                        required
+                                        
                                         placeholder="your.email@example.com"
                                     />
                                     <span v-if="errors.email" class="error-text">{{ errors.email }}</span>
@@ -53,7 +53,7 @@
                                         class="form-input"
                                         :class="{ error: errors.phone }"
                                         v-model="form.phone"
-                                        required
+                                        
                                         placeholder="+1 234 567 890"
                                     />
                                     <span v-if="errors.phone" class="error-text">{{ errors.phone }}</span>
@@ -65,7 +65,6 @@
                                         class="form-textarea"
                                         :class="{ error: errors.message }"
                                         v-model="form.message"
-                                        required
                                         placeholder="Tell us about your travel plans..."
                                     ></textarea>
                                     <span v-if="errors.message" class="error-text">{{ errors.message }}</span>
@@ -87,23 +86,27 @@
                         <div class="contact-info">
                             <h2 style="margin-bottom: 24px;">Get in Touch</h2>
                             
-                            <div class="contact-info-item">
+                            <div class="contact-info-item" v-if="contactInfo.phone">
                                 <div class="contact-info-icon">📞</div>
                                 <div class="contact-info-content">
                                     <h3>Phone</h3>
-                                    <a href="tel:+1234567890">+1 234 567 890</a>
+                                    <a :href="`tel:${contactInfo.phone}`">
+                                        {{ contactInfo.phone }}
+                                    </a>
                                 </div>
                             </div>
                             
-                            <div class="contact-info-item">
+                            <div class="contact-info-item" v-if="contactInfo.email">
                                 <div class="contact-info-icon">✉️</div>
                                 <div class="contact-info-content">
                                     <h3>Email</h3>
-                                    <a href="mailto:info@empireoholidays.com">info@empireoholidays.com</a>
+                                    <a :href="`mailto:${contactInfo.email}`">
+                                        {{ contactInfo.email }}
+                                    </a>
                                 </div>
                             </div>
                             
-                            <div class="contact-info-item">
+                            <div class="contact-info-item" v-if="contactInfo.whatsapp">
                                 <div class="contact-info-icon">💬</div>
                                 <div class="contact-info-content">
                                     <h3>WhatsApp</h3>
@@ -111,11 +114,11 @@
                                 </div>
                             </div>
                             
-                            <div class="contact-info-item">
+                            <div class="contact-info-item" v-if="contactInfo.business_hours">
                                 <div class="contact-info-icon">🕒</div>
                                 <div class="contact-info-content">
                                     <h3>Business Hours</h3>
-                                    <p>Monday - Saturday: 9:00 AM - 7:00 PM<br>Sunday: 10:00 AM - 5:00 PM</p>
+                                    <p v-html="contactInfo.business_hours.replace(/\n/g, '<br>')"></p>
                                 </div>
                             </div>
                         </div>
@@ -143,6 +146,12 @@ export default {
         Header,
         Footer,
     },
+    props: {
+        contactInfo: {
+            type: Object,
+            default: () => ({}),
+        },
+    },
     data() {
         return {
             form: {
@@ -158,7 +167,7 @@ export default {
     },
     computed: {
         whatsappUrl() {
-            const phone = '1234567890'; // Placeholder number
+            const phone = this.contactInfo?.whatsapp || '1234567890';
             const message = encodeURIComponent('Hi, I have a travel inquiry.');
             return `https://wa.me/${phone}?text=${message}`;
         },

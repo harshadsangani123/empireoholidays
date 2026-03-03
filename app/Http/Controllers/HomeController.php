@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\CmsPage;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -75,7 +76,24 @@ class HomeController extends Controller
      */
     public function contact()
     {
-        return Inertia::render('Contact');
+        $contactPage = CmsPage::where('page_type', 'contact')
+            ->where('is_published', true)
+            ->first();
+
+        $contactInfo = [
+            'phone' => $contactPage?->getContentField('phone', '+1 234 567 890'),
+            'email' => $contactPage?->getContentField('email', 'info@empireoholidays.com'),
+            'whatsapp' => $contactPage?->getContentField('whatsapp', '1234567890'),
+            'business_hours' => $contactPage?->getContentField(
+                'business_hours',
+                "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM"
+            ),
+            'address' => $contactPage?->getContentField('address', ''),
+        ];
+
+        return Inertia::render('Contact', [
+            'contactInfo' => $contactInfo,
+        ]);
     }
 
     /**
@@ -87,14 +105,12 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'message' => 'required|string|min:10|max:2000',
+            'message' => 'nullable|string|max:2000',
         ], [
             'name.required' => 'Please enter your name.',
             'email.required' => 'Please enter your email address.',
             'email.email' => 'Please enter a valid email address.',
             'phone.required' => 'Please enter your phone number.',
-            'message.required' => 'Please enter your message.',
-            'message.min' => 'Message must be at least 10 characters.',
         ]);
 
         if ($validator->fails()) {

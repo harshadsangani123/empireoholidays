@@ -60,6 +60,7 @@ class CmsPage extends Model
             'home' => 'Home',
             'membership' => 'Membership',
             'gift_vouchers' => 'Gift Vouchers',
+            'contact' => 'Contact',
             'footer' => 'Footer',
         ];
     }

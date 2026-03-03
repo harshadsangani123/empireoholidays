@@ -3,17 +3,6 @@
         <Header />
         
         <main class="main-content">
-            <!-- Package Info Header -->
-            <section class="package-hero" style="min-height: 200px;">
-                <div class="hero-overlay">
-                    <div class="container">
-                        <h1 class="package-title">Inquiry for {{ package.name }}</h1>
-                        <p class="package-location" v-if="package.country">{{ package.country }}</p>
-                        <p class="package-location" v-if="package.state">{{ package.state }}, India</p>
-                    </div>
-                </div>
-            </section>
-            
             <!-- Inquiry Form Section -->
             <section class="package-details-section">
                 <div class="container">
@@ -104,12 +93,11 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label">Message / Additional Details <span class="required">*</span></label>
+                                    <label class="form-label">Message / Additional Details</label>
                                     <textarea 
                                         class="form-textarea" 
                                         :class="{ 'error': errors.message_text }"
                                         v-model="form.message_text"
-                                        required
                                         rows="5"
                                         placeholder="Tell us about your travel plans, special requirements, or any questions you have..."
                                     ></textarea>
@@ -145,6 +133,29 @@
                                 <Link :href="backUrl" class="btn btn-primary">Back to Package</Link>
                             </div>
                         </div>
+
+                        <!-- Package Image shown after the inquiry form -->
+                        <div 
+                            v-if="package && package.photos && package.photos.length" 
+                            class="inquiry-package-image-container"
+                        >
+                            <img 
+                                :src="package.photos[0]" 
+                                :alt="package.name" 
+                                class="inquiry-package-image"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Package Info Header (moved after form) -->
+            <section class="package-hero" style="min-height: 200px;">
+                <div class="hero-overlay">
+                    <div class="container">
+                         <!-- <h1 class="package-title">Inquiry for {{ package.name }}</h1>   -->
+                        <p class="package-location" v-if="package.country">{{ package.country }}</p>
+                        <p class="package-location" v-if="package.state">{{ package.state }}, India</p>
                     </div>
                 </div>
             </section>
@@ -364,9 +375,6 @@ export default {
 .success-message {
     text-align: center;
     padding: 40px;
-    background-color: #f0f9ff;
-    border-radius: 8px;
-    border: 2px solid #0ea5e9;
 }
 
 .success-message h3 {
@@ -392,6 +400,20 @@ export default {
 .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+/* Package image shown after the form */
+.inquiry-package-image-container {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.inquiry-package-image {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
 }
 
 @media (max-width: 768px) {
