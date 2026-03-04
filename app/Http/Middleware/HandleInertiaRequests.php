@@ -53,8 +53,13 @@ class HandleInertiaRequests extends Middleware
                 'phone' => $contactPage->getContentField('phone', '+1 234 567 890'),
                 'email' => $contactPage->getContentField('email', 'info@empireoholidays.com'),
                 'whatsapp' => $contactPage->getContentField('whatsapp', '1234567890'),
-                'business_hours' => $contactPage->getContentField('business_hours', 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM'),
+                'business_hours' => $contactPage->getContentField('business_hours', 'Monday - Sunday: 9:00 AM - 8:00 PM'),
                 'address' => $contactPage->getContentField('address', ''),
+                'social' => [
+                    'facebook' => $contactPage->getContentField('facebook', 'https://www.facebook.com/'),
+                    'instagram' => $contactPage->getContentField('instagram', 'https://www.instagram.com/'),
+                    'linkedin' => $contactPage->getContentField('linkedin', 'https://www.linkedin.com/'),
+                ],
             ];
         } else {
             // Fallback to default values if no CMS page exists
@@ -62,8 +67,13 @@ class HandleInertiaRequests extends Middleware
                 'phone' => '+1 234 567 890',
                 'email' => 'info@empireoholidays.com',
                 'whatsapp' => '1234567890',
-                'business_hours' => 'Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM',
+                'business_hours' => 'Monday - Sunday: 9:00 AM - 8:00 PM',
                 'address' => '',
+                'social' => [
+                    'facebook' => 'https://www.facebook.com/',
+                    'instagram' => 'https://www.instagram.com/',
+                    'linkedin' => 'https://www.linkedin.com/',
+                ],
             ];
         }
 

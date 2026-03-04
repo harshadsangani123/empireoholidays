@@ -112,7 +112,7 @@ class HomeController extends Controller
             'whatsapp' => $contactPage?->getContentField('whatsapp', '1234567890'),
             'business_hours' => $contactPage?->getContentField(
                 'business_hours',
-                "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM"
+                "Monday - Sunday: 9:00 AM - 8:00 PM"
             ),
             'address' => $contactPage?->getContentField('address', ''),
         ];

@@ -78,12 +78,30 @@ class CmsPageForm
                 ->label('WhatsApp Number')
                 ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
                 ->placeholder('1234567890'),
+
+            TextInput::make('content.facebook')
+                ->label('Facebook URL')
+                ->url()
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
+                ->placeholder('https://www.facebook.com/your-page'),
+
+            TextInput::make('content.instagram')
+                ->label('Instagram URL')
+                ->url()
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
+                ->placeholder('https://www.instagram.com/your-profile'),
+
+            TextInput::make('content.linkedin')
+                ->label('LinkedIn URL')
+                ->url()
+                ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
+                ->placeholder('https://www.linkedin.com/company/your-company'),
             
             Textarea::make('content.business_hours')
                 ->label('Business Hours')
                 ->rows(3)
                 ->visible(fn ($get) => in_array($get('page_type'), ['footer', 'contact'], true))
-                ->placeholder('Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM'),
+                ->placeholder('Monday - Sunday: 9:00 AM - 8:00 PM'),
             
             Textarea::make('content.address')
                 ->label('Address')

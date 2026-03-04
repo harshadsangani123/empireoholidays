@@ -25,8 +25,11 @@ class ContactCmsPageSeeder extends Seeder
                     'phone' => '+91 9016393892',
                     'email' => 'empireoholidays@gmail.com',
                     'whatsapp' => '9016393892',
-                    'business_hours' => "Monday - Saturday: 9:00 AM - 7:00 PM\nSunday: 10:00 AM - 5:00 PM",
+                    'business_hours' => "Monday - Sunday: 9:00 AM - 8:00 PM",
                     'address' => '',
+                    'facebook' => 'https://www.facebook.com/',
+                    'instagram' => 'https://www.instagram.com/',
+                    'linkedin' => 'https://www.linkedin.com/',
                 ],
                 'meta_data' => [
                     'meta_title' => 'Contact Us - Empireo Holidays',
