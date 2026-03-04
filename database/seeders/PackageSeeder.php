@@ -203,26 +203,32 @@ class PackageSeeder extends Seeder
         foreach ($internationalPackages as $pkg) {
             $galleryImages = $photos['international'][$pkg['id']] ?? [];
             // Remove main image from gallery if it exists
-            $galleryImages = array_filter($galleryImages, function($img) use ($pkg) {
+            $galleryImages = array_filter($galleryImages, function ($img) use ($pkg) {
                 return $img !== $pkg['image'];
             });
 
-            Package::create([
-                'name' => $pkg['name'],
-                'type' => 'international',
-                'country' => $pkg['country'],
-                'state' => null,
-                'description' => $pkg['description'],
-                'detailed_description' => $detailedDescriptions['international'][$pkg['id']] ?? $pkg['description'],
-                'price_per_person' => $defaultPrices['international'][$pkg['id']] ?? 50000,
-                'currency' => 'INR',
-                'duration' => '5 Days / 4 Nights',
-                'main_image' => $pkg['image'],
-                'gallery_images' => array_values($galleryImages),
-                'is_featured' => $pkg['id'] <= 4, // First 4 are featured
-                'is_published' => true,
-                'sort_order' => $pkg['id'],
-            ]);
+            // Use updateOrCreate so running the seeder multiple times
+            // does not create duplicate rows for the same package
+            Package::updateOrCreate(
+                [
+                    'type' => 'international',
+                    'name' => $pkg['name'],
+                ],
+                [
+                    'country' => $pkg['country'],
+                    'state' => null,
+                    'description' => $pkg['description'],
+                    'detailed_description' => $detailedDescriptions['international'][$pkg['id']] ?? $pkg['description'],
+                    'price_per_person' => $defaultPrices['international'][$pkg['id']] ?? 50000,
+                    'currency' => 'INR',
+                    'duration' => '5 Days / 4 Nights',
+                    'main_image' => $pkg['image'],
+                    'gallery_images' => array_values($galleryImages),
+                    'is_featured' => $pkg['id'] <= 4, // First 4 are featured
+                    'is_published' => true,
+                    'sort_order' => $pkg['id'],
+                ]
+            );
         }
 
         // Migrate Domestic Packages
@@ -230,26 +236,31 @@ class PackageSeeder extends Seeder
         foreach ($domesticPackages as $pkg) {
             $galleryImages = $photos['domestic'][$pkg['id']] ?? [];
             // Remove main image from gallery if it exists
-            $galleryImages = array_filter($galleryImages, function($img) use ($pkg) {
+            $galleryImages = array_filter($galleryImages, function ($img) use ($pkg) {
                 return $img !== $pkg['image'];
             });
 
-            Package::create([
-                'name' => $pkg['name'],
-                'type' => 'domestic',
-                'country' => null,
-                'state' => $pkg['state'],
-                'description' => $pkg['description'],
-                'detailed_description' => $detailedDescriptions['domestic'][$pkg['id']] ?? $pkg['description'],
-                'price_per_person' => $defaultPrices['domestic'][$pkg['id']] ?? 25000,
-                'currency' => 'INR',
-                'duration' => '4 Days / 3 Nights',
-                'main_image' => $pkg['image'],
-                'gallery_images' => array_values($galleryImages),
-                'is_featured' => $pkg['id'] <= 4, // First 4 are featured
-                'is_published' => true,
-                'sort_order' => $pkg['id'],
-            ]);
+            // Same idea here – make seeding idempotent
+            Package::updateOrCreate(
+                [
+                    'type' => 'domestic',
+                    'name' => $pkg['name'],
+                ],
+                [
+                    'country' => null,
+                    'state' => $pkg['state'],
+                    'description' => $pkg['description'],
+                    'detailed_description' => $detailedDescriptions['domestic'][$pkg['id']] ?? $pkg['description'],
+                    'price_per_person' => $defaultPrices['domestic'][$pkg['id']] ?? 25000,
+                    'currency' => 'INR',
+                    'duration' => '4 Days / 3 Nights',
+                    'main_image' => $pkg['image'],
+                    'gallery_images' => array_values($galleryImages),
+                    'is_featured' => $pkg['id'] <= 4, // First 4 are featured
+                    'is_published' => true,
+                    'sort_order' => $pkg['id'],
+                ]
+            );
         }
     }
 }

@@ -7,6 +7,7 @@ use App\Models\CmsPage;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\ContactFormMail;
 
@@ -17,6 +18,30 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Optional home CMS page for hero background image
+        $homePage = CmsPage::where('page_type', 'home')
+            ->where('is_published', true)
+            ->first();
+
+        $heroBackgrounds = [];
+        if ($homePage) {
+            $bg = $homePage->getContentField('hero_background');
+            if (is_array($bg)) {
+                foreach ($bg as $item) {
+                    if (! $item) {
+                        continue;
+                    }
+                    $heroBackgrounds[] = filter_var($item, FILTER_VALIDATE_URL)
+                        ? $item
+                        : Storage::url($item);
+                }
+            } elseif ($bg) {
+                $heroBackgrounds[] = filter_var($bg, FILTER_VALIDATE_URL)
+                    ? $bg
+                    : Storage::url($bg);
+            }
+        }
+
         return Inertia::render('Home', [
             'featuredInternational' => Package::international()
                 ->published()
@@ -32,6 +57,7 @@ class HomeController extends Controller
                 ->limit(4)
                 ->get()
                 ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+            'heroBackgrounds' => $heroBackgrounds,
         ]);
     }
 

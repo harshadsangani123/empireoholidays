@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         // Seed footer CMS pages
         $this->call([
             FooterCmsPageSeeder::class,
+            HomeCmsPageSeeder::class,
             ContactCmsPageSeeder::class,
             PackageSeeder::class,
         ]);

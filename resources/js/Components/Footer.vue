@@ -2,9 +2,9 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
-                <!-- Home Section -->
+                <!-- Quick Links Section -->
                 <div class="footer-section">
-                    <h3>Home</h3>
+                    <h3>Quick Links</h3>
                     <div class="footer-links">
                         <Link href="/" class="footer-link">Home</Link>
                         <Link href="/about" class="footer-link">About Us</Link>
@@ -25,16 +25,18 @@
                 
                 <!-- Logo Section (replaces International) -->
                 <div class="footer-section footer-logo-section">
-                    <img src="../../images/empireo-logo.jpg" alt="Empireo Holidays" class="footer-logo">
+                    <!-- Use same imported logo asset as header -->
+                    <img src="../../images/empireo-logo-2.png" alt="Empireo Holidays" class="footer-logo">
                 </div>
                 
-                <!-- Domestic Section -->
+                <!-- Tour Types Section -->
                 <div class="footer-section">
-                    <h3>Domestic</h3>
+                    <h3>Tour Types</h3>
                     <div class="footer-links">
-                        <a href="#" class="footer-link">FAQs</a>
-                        <a href="#" class="footer-link">Travel Tips</a>
-                        <a href="#" class="footer-link">Gallery</a>
+                        <span class="footer-link">Couple Tour</span>
+                        <span class="footer-link">Customize Tour</span>
+                        <span class="footer-link">Family Tour</span>
+                        <span class="footer-link">Summer Tour</span>
                     </div>
                 </div>
                 
@@ -67,7 +69,6 @@
 
 <script>
 import { Link, usePage } from '@inertiajs/vue3';
-
 export default {
     components: {
         Link,
@@ -85,7 +86,7 @@ export default {
         },
         whatsappUrl() {
             const phone = this.footerContact.whatsapp || '1234567890';
-            const message = encodeURIComponent('Hi, I\'m interested in your travel packages.');
+            const message = encodeURIComponent("Hi, I'm interested in your travel packages.");
             return `https://wa.me/${phone}?text=${message}`;
         },
     },

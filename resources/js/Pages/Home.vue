@@ -7,7 +7,7 @@
             <section class="video-hero slider-hero">
                 <div class="slider-container">
                     <div 
-                        v-for="(image, index) in sliderImages" 
+                        v-for="(image, index) in heroSliderImages" 
                         :key="index"
                         class="slider-image"
                         :class="{ active: currentSlide === index }"
@@ -93,7 +93,7 @@
             </section>
             
             <!-- Top Domestic Packages Section -->
-            <section class="packages-section" style="background-color: #F7F7F7;">
+            <section class="packages-section">
                 <div class="container">
                     <div class="section-title">
                         <h2>Top Domestic Packages</h2>
@@ -109,6 +109,86 @@
                     </div>
                     <div style="text-align: center; margin-top: 40px;">
                         <Link href="/domestic" class="btn btn-primary">View More Domestic Packages</Link>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us Section -->
+            <section class="why-choose-section">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Why Choose Empireo Holidays</h2>
+                        <p>We make your travel simple, memorable, and worry‑free</p>
+                    </div>
+                    <div class="why-choose-grid">
+                        <div class="why-card">
+                            <div class="why-icon">👤</div>
+                            <h3>Personalised Travel Experiences</h3>
+                        </div>
+                        <div class="why-card">
+                            <div class="why-icon">⚙️</div>
+                            <h3>Comprehensive Services</h3>
+                        </div>
+                        <div class="why-card">
+                            <div class="why-icon">🎯</div>
+                            <h3>Expert Guidance</h3>
+                        </div>
+                        <div class="why-card">
+                            <div class="why-icon">🌍</div>
+                            <h3>Global & Domestic Reach</h3>
+                        </div>
+                        <div class="why-card">
+                            <div class="why-icon">💰</div>
+                            <h3>Competitive Pricing</h3>
+                        </div>
+                        <div class="why-card">
+                            <div class="why-icon">📞</div>
+                            <h3>24/7 Support</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Service Booking Cards Section -->
+            <section class="service-types-section">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Everything You Need for Your Trip</h2>
+                        <p>Fast, easy, and hassle‑free booking awaits</p>
+                    </div>
+                    <div class="service-types-grid">
+                        <div class="service-card">
+                            <div class="service-icon">✈️</div>
+                            <h3>Flight tickets</h3>
+                            <p>Book domestic and international flights in just a few clicks.</p>
+                            <Link href="/contact" class="service-book-btn">
+                                Book Now
+                            </Link>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🚆</div>
+                            <h3>Train Ticket</h3>
+                            <p>Reserve train seats quickly with our hassle‑free support.</p>
+                            <Link href="/contact" class="service-book-btn">
+                                Book Now
+                            </Link>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🚖</div>
+                            <h3>Transportation</h3>
+                            <p>Arrange airport transfers, cabs, and local sightseeing travel.</p>
+                            <Link href="/contact" class="service-book-btn">
+                                Book Now
+                            </Link>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-icon">🏨</div>
+                            <h3>Hotel booking</h3>
+                            <p>Find and book comfortable stays at the best available rates.</p>
+                            <Link href="/contact" class="service-book-btn">
+                                Book Now
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -141,6 +221,10 @@ export default {
             type: Array,
             default: () => [],
         },
+        heroBackgrounds: {
+            type: Array,
+            default: () => [],
+        },
     },
     data() {
         return {
@@ -155,6 +239,14 @@ export default {
             autoPlayInterval: null,
             heroLogo,
         };
+    },
+    computed: {
+        heroSliderImages() {
+            if (this.heroBackgrounds && this.heroBackgrounds.length) {
+                return this.heroBackgrounds;
+            }
+            return this.sliderImages;
+        },
     },
     mounted() {
         this.startAutoPlay();

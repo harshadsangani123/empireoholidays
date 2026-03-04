@@ -124,10 +124,10 @@
                         </div>
                     </div>
                     
-                    <!-- Map Placeholder -->
+                    <!-- Map Placeholder 
                     <div class="map-placeholder">
                         <p>📍 Google Maps will be integrated here</p>
-                    </div>
+                    </div> -->
                 </div>
             </section>
         </main>

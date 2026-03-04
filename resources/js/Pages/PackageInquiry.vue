@@ -1,5 +1,9 @@
 <template>
     <div>
+        <Head>
+            <title>Inquiry for {{ package.name }}</title>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        </Head>
         <Header />
         
         <main class="main-content">
@@ -133,27 +137,16 @@
                                 <Link :href="backUrl" class="btn btn-primary">Back to Package</Link>
                             </div>
                         </div>
-
-                        <!-- Package Image shown after the inquiry form -->
-                        <div 
-                            v-if="package && package.photos && package.photos.length" 
-                            class="inquiry-package-image-container"
-                        >
-                            <img 
-                                :src="package.photos[0]" 
-                                :alt="package.name" 
-                                class="inquiry-package-image"
-                            />
-                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Package Info Header (moved after form) -->
-            <section class="package-hero" style="min-height: 200px;">
+            <!-- Package Hero (show main image like detail page) -->
+            <section class="package-hero" v-if="package && package.image">
+                <img :src="package.image" :alt="package.name" class="hero-image" />
                 <div class="hero-overlay">
                     <div class="container">
-                         <!-- <h1 class="package-title">Inquiry for {{ package.name }}</h1>   -->
+                        <h1 class="package-title">Inquiry for {{ package.name }}</h1>
                         <p class="package-location" v-if="package.country">{{ package.country }}</p>
                         <p class="package-location" v-if="package.state">{{ package.state }}, India</p>
                     </div>
@@ -166,12 +159,13 @@
 </template>
 
 <script>
-import { Link, router } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
 
 export default {
     components: {
+        Head,
         Link,
         Header,
         Footer,
@@ -212,16 +206,6 @@ export default {
         backUrl() {
             return `/package/${this.package.type}/${this.package.id}`;
         },
-    },
-    mounted() {
-        // Load Google reCAPTCHA script (auto-render mode)
-        if (this.recaptchaSiteKey && !document.querySelector('script[src*="https://www.google.com/recaptcha/api.js"]')) {
-            const script = document.createElement('script');
-            script.src = 'https://www.google.com/recaptcha/api.js';
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-        }
     },
     methods: {
         handleSubmit() {

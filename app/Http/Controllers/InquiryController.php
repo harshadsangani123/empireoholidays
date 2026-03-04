@@ -27,6 +27,8 @@ class InquiryController extends Controller
                 'type' => $package->type,
                 'country' => $package->country,
                 'state' => $package->state,
+                // Main image URL (same as detail page)
+                'image' => $package->main_image_url ?? $package->image,
             ],
             'recaptchaSiteKey' => config('services.recaptcha.site_key'),
         ]);
