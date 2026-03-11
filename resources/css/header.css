@@ -34,19 +34,20 @@
 .logo {
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .logo-image {
     display: block;
-    height: 48px;
+    height: 56px;
     width: auto;
 }
 
 @media (max-width: 768px) {
     .logo-image {
-        height: 36px;
+        height: 44px;
     }
 }
 

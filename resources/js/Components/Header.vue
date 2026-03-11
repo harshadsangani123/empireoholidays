@@ -29,7 +29,7 @@
 
 <script>
 import { Link } from '@inertiajs/vue3';
-import logo from '../../images/empireo-logo.jpg';
+import logo from '../../images/EMPIREO LOGO JPG (1).jpg';
 
 export default {
     components: {

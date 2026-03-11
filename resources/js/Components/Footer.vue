@@ -23,10 +23,9 @@
                     </div>
                 </div>
                 
-                <!-- Logo Section (replaces International) -->
+                <!-- Logo Section -->
                 <div class="footer-section footer-logo-section">
-                    <!-- Use same imported logo asset as header -->
-                    <img src="../../images/empireo-logo-2.png" alt="Empireo Holidays" class="footer-logo">
+                    <img :src="footerLogo" alt="Empireo Holidays" class="footer-logo">
                 </div>
                 
                 <!-- Tour Types Section -->
@@ -55,6 +54,43 @@
                         <span>💬</span>
                         <a :href="whatsappUrl" target="_blank">WhatsApp Us</a>
                     </div>
+
+                    <!-- Social Icons -->
+                    <div class="footer-social">
+                        <p class="footer-social-title">Follow Us</p>
+                        <div class="footer-social-icons">
+                            <a
+                                v-if="socialLinks.facebook"
+                                :href="socialLinks.facebook"
+                                class="footer-social-icon footer-social-icon--facebook"
+                                target="_blank"
+                                rel="noopener"
+                                aria-label="Follow us on Facebook"
+                            >
+                                <span>f</span>
+                            </a>
+                            <a
+                                v-if="socialLinks.instagram"
+                                :href="socialLinks.instagram"
+                                class="footer-social-icon footer-social-icon--instagram"
+                                target="_blank"
+                                rel="noopener"
+                                aria-label="Follow us on Instagram"
+                            >
+                                <img :src="instagramIcon" alt="Instagram" class="footer-social-image" />
+                            </a>
+                            <a
+                                v-if="socialLinks.linkedin"
+                                :href="socialLinks.linkedin"
+                                class="footer-social-icon footer-social-icon--linkedin"
+                                target="_blank"
+                                rel="noopener"
+                                aria-label="Follow us on LinkedIn"
+                            >
+                                <span>in</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -69,9 +105,18 @@
 
 <script>
 import { Link, usePage } from '@inertiajs/vue3';
+import instagramIcon from '../../images/icon-instagram.svg';
+import footerLogo from '../../images/EMPIREO LOGO PNG (1).png';
+
 export default {
     components: {
         Link,
+    },
+    data() {
+        return {
+            instagramIcon,
+            footerLogo,
+        };
     },
     computed: {
         footerContact() {
@@ -88,6 +133,21 @@ export default {
             const phone = this.footerContact.whatsapp || '1234567890';
             const message = encodeURIComponent("Hi, I'm interested in your travel packages.");
             return `https://wa.me/${phone}?text=${message}`;
+        },
+        socialLinks() {
+            const defaults = {
+                facebook: 'https://www.facebook.com/',
+                instagram: 'https://www.instagram.com/',
+                linkedin: 'https://www.linkedin.com/',
+            };
+
+            const social = (this.footerContact && this.footerContact.social) || {};
+
+            return {
+                facebook: social.facebook || defaults.facebook,
+                instagram: social.instagram || defaults.instagram,
+                linkedin: social.linkedin || defaults.linkedin,
+            };
         },
     },
 };

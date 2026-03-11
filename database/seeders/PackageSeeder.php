@@ -6,6 +6,7 @@ use App\Data\Packages;
 use App\Models\Package;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class PackageSeeder extends Seeder
 {
@@ -201,6 +202,14 @@ class PackageSeeder extends Seeder
         // Migrate International Packages
         $internationalPackages = Packages::getInternationalPackages();
         foreach ($internationalPackages as $pkg) {
+            $slug = \Illuminate\Support\Str::kebab($pkg['name']);
+            $localMainImage = "packages/international/{$slug}/main.jpg";
+            
+            // Use local image if it exists, otherwise fallback to URL
+            $mainImage = \Storage::disk('public')->exists($localMainImage) 
+                ? $localMainImage 
+                : $pkg['image'];
+
             $galleryImages = $photos['international'][$pkg['id']] ?? [];
             // Remove main image from gallery if it exists
             $galleryImages = array_filter($galleryImages, function ($img) use ($pkg) {
@@ -222,7 +231,7 @@ class PackageSeeder extends Seeder
                     'price_per_person' => $defaultPrices['international'][$pkg['id']] ?? 50000,
                     'currency' => 'INR',
                     'duration' => '5 Days / 4 Nights',
-                    'main_image' => $pkg['image'],
+                    'main_image' => $mainImage,
                     'gallery_images' => array_values($galleryImages),
                     'is_featured' => $pkg['id'] <= 4, // First 4 are featured
                     'is_published' => true,
@@ -234,6 +243,14 @@ class PackageSeeder extends Seeder
         // Migrate Domestic Packages
         $domesticPackages = Packages::getDomesticPackages();
         foreach ($domesticPackages as $pkg) {
+            $slug = \Illuminate\Support\Str::kebab($pkg['name']);
+            $localMainImage = "packages/domestic/{$slug}/main.jpg";
+            
+            // Use local image if it exists, otherwise fallback to URL
+            $mainImage = \Storage::disk('public')->exists($localMainImage) 
+                ? $localMainImage 
+                : $pkg['image'];
+
             $galleryImages = $photos['domestic'][$pkg['id']] ?? [];
             // Remove main image from gallery if it exists
             $galleryImages = array_filter($galleryImages, function ($img) use ($pkg) {
@@ -254,7 +271,7 @@ class PackageSeeder extends Seeder
                     'price_per_person' => $defaultPrices['domestic'][$pkg['id']] ?? 25000,
                     'currency' => 'INR',
                     'duration' => '4 Days / 3 Nights',
-                    'main_image' => $pkg['image'],
+                    'main_image' => $mainImage,
                     'gallery_images' => array_values($galleryImages),
                     'is_featured' => $pkg['id'] <= 4, // First 4 are featured
                     'is_published' => true,
