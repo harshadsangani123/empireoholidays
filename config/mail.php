@@ -65,6 +65,17 @@ return [
             'transport' => 'resend',
         ],
 
+        'brevo' => [
+            'transport' => 'smtp',
+            'host' => env('BREVO_SMTP_HOST', 'smtp-relay.brevo.com'),
+            'port' => env('BREVO_SMTP_PORT', 587),
+            'encryption' => env('BREVO_SMTP_ENCRYPTION', 'tls'),
+            'username' => env('BREVO_SMTP_USERNAME'),
+            'password' => env('BREVO_SMTP_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
+
         'sendmail' => [
             'transport' => 'sendmail',
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
@@ -114,5 +125,17 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inquiry Email Address
+    |--------------------------------------------------------------------------
+    |
+    | This email address will receive all package inquiry submissions.
+    | If not set, it will fall back to the MAIL_FROM_ADDRESS.
+    |
+    */
+
+    'inquiry_email' => env('INQUIRY_EMAIL', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
 
 ];

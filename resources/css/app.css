@@ -1,11 +1,21 @@
-@import 'tailwindcss';
+/* Main Stylesheet - Imports all CSS files */
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* Base Styles */
+@import './base.css';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+/* Layout */
+@import './layout.css';
+
+/* Components */
+@import './header.css';
+@import './footer.css';
+@import './components.css';
+
+/* Pages */
+@import './pages.css';
+
+/* Package Detail */
+@import './package-detail.css';
+
+/* Responsive */
+@import './responsive.css';

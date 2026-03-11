@@ -1,0 +1,232 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Package;
+use App\Models\CmsPage;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Mail\ContactFormMail;
+
+class HomeController extends Controller
+{
+    /**
+     * Display the home page
+     */
+    public function index()
+    {
+        // Optional home CMS page for hero background image
+        $homePage = CmsPage::where('page_type', 'home')
+            ->where('is_published', true)
+            ->first();
+
+        $heroBackgrounds = [];
+        if ($homePage) {
+            $bg = $homePage->getContentField('hero_background');
+            if (is_array($bg)) {
+                foreach ($bg as $item) {
+                    if (! $item) {
+                        continue;
+                    }
+                    $heroBackgrounds[] = filter_var($item, FILTER_VALIDATE_URL)
+                        ? $item
+                        : Storage::url($item);
+                }
+            } elseif ($bg) {
+                $heroBackgrounds[] = filter_var($bg, FILTER_VALIDATE_URL)
+                    ? $bg
+                    : Storage::url($bg);
+            }
+        }
+
+        return Inertia::render('Home', [
+            'featuredInternational' => Package::international()
+                ->published()
+                ->featured()
+                ->orderBy('sort_order')
+                ->limit(4)
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+            'featuredDomestic' => Package::domestic()
+                ->published()
+                ->featured()
+                ->orderBy('sort_order')
+                ->limit(4)
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+            'heroBackgrounds' => $heroBackgrounds,
+        ]);
+    }
+
+    /**
+     * Display the about us page
+     */
+    public function about()
+    {
+        return Inertia::render('About');
+    }
+
+    /**
+     * Display the international holidays page
+     */
+    public function international()
+    {
+        return Inertia::render('International', [
+            'packages' => Package::international()
+                ->published()
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+        ]);
+    }
+
+    /**
+     * Display the domestic holidays page
+     */
+    public function domestic()
+    {
+        return Inertia::render('Domestic', [
+            'packages' => Package::domestic()
+                ->published()
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn($pkg) => $this->formatPackageForFrontend($pkg)),
+        ]);
+    }
+
+    /**
+     * Display the contact us page
+     */
+    public function contact()
+    {
+        $contactPage = CmsPage::where('page_type', 'contact')
+            ->where('is_published', true)
+            ->first();
+
+        $contactInfo = [
+            'phone' => $contactPage?->getContentField('phone', '+1 234 567 890'),
+            'email' => $contactPage?->getContentField('email', 'info@empireoholidays.com'),
+            'whatsapp' => $contactPage?->getContentField('whatsapp', '1234567890'),
+            'business_hours' => $contactPage?->getContentField(
+                'business_hours',
+                "Monday - Sunday: 9:00 AM - 8:00 PM"
+            ),
+            'address' => $contactPage?->getContentField('address', ''),
+        ];
+
+        return Inertia::render('Contact', [
+            'contactInfo' => $contactInfo,
+        ]);
+    }
+
+    /**
+     * Handle Contact Us form submission
+     */
+    public function submitContact(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'message' => 'nullable|string|max:2000',
+        ], [
+            'name.required' => 'Please enter your name.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'phone.required' => 'Please enter your phone number.',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        try {
+            $data = $validator->validated();
+
+            // Get the inquiry email from config, fallback to app from address
+            $inquiryEmail = config('mail.inquiry_email') ?: config('mail.from.address');
+
+            // Determine which mailer to use (Brevo if configured, otherwise default)
+            $useBrevo = config('services.brevo.smtp_username') && config('services.brevo.smtp_password');
+            $mail = $useBrevo ? Mail::mailer('brevo') : Mail::mailer();
+
+            // Send the email
+            $mail->to($inquiryEmail)
+                ->send(new ContactFormMail($data));
+
+            return back()->with('success', true);
+        } catch (\Exception $e) {
+            \Log::error('Contact email failed: ' . $e->getMessage());
+
+            return back()->withErrors([
+                'message' => 'Sorry, there was an error sending your message. Please try again later or contact us directly.',
+            ])->withInput();
+        }
+    }
+
+    /**
+     * Display package detail page
+     */
+    public function packageDetail(string $type, int $id)
+    {
+        $package = Package::where('type', $type)
+            ->where('id', $id)
+            ->published()
+            ->first();
+
+        if (!$package) {
+            abort(404, 'Package not found');
+        }
+
+        return Inertia::render('PackageDetail', [
+            'package' => $this->formatPackageForDetail($package),
+        ]);
+    }
+
+    /**
+     * Format package data for frontend (card view)
+     */
+    private function formatPackageForFrontend(Package $package): array
+    {
+        return [
+            'id' => $package->id,
+            'name' => $package->name,
+            'country' => $package->country,
+            'state' => $package->state,
+            'description' => $package->description,
+            'image' => $package->main_image_url ?? $package->image,
+            'price_per_person' => $package->price_per_person,
+            'currency' => $package->currency,
+            'duration' => $package->duration,
+            'type' => $package->type,
+        ];
+    }
+
+    /**
+     * Format package data for detail page
+     */
+    private function formatPackageForDetail(Package $package): array
+    {
+        return [
+            'id' => $package->id,
+            'name' => $package->name,
+            'country' => $package->country,
+            'state' => $package->state,
+            'description' => $package->description,
+            'detailedDescription' => $package->getDetailedDescription(),
+            'image' => $package->main_image_url ?? $package->image,
+            'photos' => $package->photos,
+            'price_per_person' => $package->price_per_person,
+            'currency' => $package->currency,
+            'duration' => $package->duration,
+            'inclusions' => $package->inclusions ?? [],
+            'exclusions' => $package->exclusions ?? [],
+            'itinerary' => $package->itinerary ?? [],
+            'type' => $package->type,
+        ];
+    }
+}
+
