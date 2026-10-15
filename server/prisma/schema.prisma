@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum PackageType {
+  international
+  domestic
+}
+
+model Package {
+  id                   Int         @id @default(autoincrement())
+  name                 String
+  type                 PackageType
+  country              String?
+  state                String?
+  description          String?     @db.Text
+  detailedDescription  String?     @map("detailed_description") @db.Text
+  pricePerPerson       Decimal?    @map("price_per_person") @db.Decimal(10, 2)
+  currency             String      @default("INR")
+  duration             String?
+  inclusions           Json?
+  exclusions           Json?
+  itinerary            Json?
+  mainImage            String?     @map("main_image")
+  galleryImages        Json?       @map("gallery_images")
+  isFeatured           Boolean     @default(false) @map("is_featured")
+  isPublished          Boolean     @default(true) @map("is_published")
+  sortOrder            Int         @default(0) @map("sort_order")
+  metaTitle            String?     @map("meta_title")
+  metaDescription      String?     @map("meta_description") @db.Text
+  createdAt            DateTime    @default(now()) @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+  deletedAt            DateTime?   @map("deleted_at")
+
+  @@map("packages")
+}
+
+model CmsPage {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  pageType    String    @map("page_type")
+  content     Json
+  metaData    Json?     @map("meta_data")
+  isPublished Boolean   @default(true) @map("is_published")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map("cms_pages")
+}
+
+model AdminUser {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_users")
+}
